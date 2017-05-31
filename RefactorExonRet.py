@@ -79,21 +79,61 @@ def DictEditor(DictGeneObj):
         :returns: TODO
         
         """
+
+        DicrectionInfo = CheckDirection(ListofList)
+
+        if DicrectionInfo == 0:
+            LargestScafHitRegion = max(ListofList, key=lambda x: int(x[5]))
+            SmallestScafHitRegion = min(ListofList, key=lambda x: int(x[4]))
+            SmallestInt = int(SmallestScafHitRegion[4])
+            LargestInt = int(LargestScafHitRegion[5])
+            
+            if SmallestInt < LargestInt:
+                ScaffoldRange = (SmallestInt,
+                        LargestInt)
+                return ScaffoldRange
+            
+        elif DicrectionInfo == 1:
+            LargestScafHitRegion = max(ListofList, key=lambda x: int(x[4]))
+            SmallestScafHitRegion = min(ListofList, key=lambda x: int(x[5]))
+            SmallestInt = int(SmallestScafHitRegion[5])
+            LargestInt = int(LargestScafHitRegion[4])
+
+            if SmallestInt < LargestInt:
+                ScaffoldRange = (SmallestInt,
+                        LargestInt)
+                return ScaffoldRange
+
+        elif DicrectionInfo == 2:
+            print "ERROROOROROR"
+            for item in ListofList:
+                print item
+
+    def CheckDirection(ListofList):
+        """TODO: Docstring for .
+
+        :ListofList: TODO
+        :returns: TODO
+
+        """
+        Posotive = 0
+        Negative = 0
         
-        LargestScafHitRegion = max(ListofList, key=lambda x: int(x[5]))
-        SmallestScafHitRegion = min(ListofList, key=lambda x: int(x[4]))
-        SmallestInt = int(SmallestScafHitRegion[4])
-        LargestInt = int(LargestScafHitRegion[5])
-        
-        if SmallestInt < LargestInt:
-            ScaffoldRange = (SmallestInt,
-                    LargestInt)
-            return ScaffoldRange
-        
-        elif SmallestInt > LargestInt:
-            ScaffoldRange = (LargestInt,
-                    SmallestInt)
-            return ScaffoldRange
+        for blastresult in ListofList:
+            if int(blastresult[4]) < int(blastresult[5]):
+                Posotive += 1
+            elif int(blastresult[4]) > int(blastresult[5]):
+                Negative += 1
+
+        if Posotive > 0:
+            return 0
+        elif Negative > 0:
+            return 1
+        elif Posotive > 0 and Negative > 0:
+            return 2
+
+
+
     
     def OverlapCheckandElimination(ListofList1, TupleLength1, ListofList2, \
             TupleLength2):
@@ -137,23 +177,33 @@ def DictEditor(DictGeneObj):
         #count =  Number of Exons
         #Escore  = sum of Escores
 
-
+        #The below logical returns the items that are of low quality and will
+        #be removed in later processing steps
         if count1 > count2:
             return ListofList2[0][0]
 
         elif count2 > count1:
             return ListofList1[0][0]
 
-        elif count1 == count2 and EScoreCalc1 < EScoreCalc2:
+        elif count1 == count2 and float(EScoreCalc1) < float(EScoreCalc2):
             return ListofList2[0][0]
 
-        elif count1 == count2 and EScoreCalc2 < EScoreCalc1:
+        elif count1 == count2 and float(EScoreCalc2) < float(EScoreCalc1):
             return ListofList1[0][0]
 
         elif count1 == count2 and EScoreCalc1 == EScoreCalc1 and Length1 == Length2:
             return ListofList1[0][0]
+        
+        elif count1 == count2 and EScoreCalc1 == EScoreCalc2 and Length1 > Length2:
+            return ListofList2[0][0]
+
+        elif count1 == count2 and EScoreCalc1 == EScoreCalc2 and Length1 < Length2:
+            return ListofList1[0][0]
+
         else: 
             print "ERROR"
+           
+
 
 
     for Scaffold, Gene in DictGeneObj.iteritems():
@@ -171,12 +221,10 @@ def DictEditor(DictGeneObj):
                 if pairing[0] in Gene.keys() and pairing[1] in Gene.keys():
                     CheckRange1 = ScaffoldHitRange(Gene[pairing[0]])
                     CheckRange2 = ScaffoldHitRange(Gene[pairing[1]])
-                    
                     #Below checks Overlap
+
                     if CheckRange1[0] <= CheckRange2[1] and CheckRange2[0] <= \
                     CheckRange1[1]:
-                        
-                        
                         RemoveThis = OverlapCheckandElimination(Gene[pairing[0]], CheckRange1, \
                                 Gene[pairing[1]], CheckRange2)
                         GeneToBeRemoved.append(RemoveThis)
@@ -186,7 +234,10 @@ def DictEditor(DictGeneObj):
     
             Unique = set(GeneToBeRemoved)
             for LowQualGene in Unique:
-                del Gene[LowQualGene]
+                if LowQualGene != None:
+                    del Gene[LowQualGene]
+                else:
+                    pass
 
 
     return DictGeneObj
@@ -267,11 +318,20 @@ def DuplicationSplitter(BlastListofList):
     :returns: TODO
 
     """
-    BlastListofList.sort(key=lambda x:float(x[4]))
-    pass
-    #for item in BlastListofList:
-    #    print item
-    #print '\n'
+    sorted(BlastListofList, key = lambda x: (x[2],x[4]))
+    for item in BlastListofList:
+        print item
+    print '\n'
+
+    def FindMultipleStarts(arg1):
+        """TODO: Docstring for FindMultipleStarts.
+
+        :arg1: TODO
+        :returns: TODO
+
+        """
+        pass
+
 
 def FileWriter(ListofBlastData):
     """TODO: Docstring for FileWriter.
@@ -311,13 +371,12 @@ def SeqFileWriter(ListofBlastData, Sequence):
     #SEQUENCE, and ONE HEADER
     
     with open(ScaffoldFileName, 'a+') as f:
-        for item in ListofBlastData:
-            GeneName  = ListofBlastData[0][0]
-            NewGeneName = ">" + str(GeneName)
-            f.write(NewGeneName)
-            f.write("\n")
-            f.write(Sequence)
-            f.write("\n")
+        GeneName  = ListofBlastData[0][0]
+        NewGeneName = ">" + str(GeneName)
+        f.write(NewGeneName)
+        f.write("\n")
+        f.write(Sequence)
+        f.write("\n")
 
 
 
@@ -389,23 +448,22 @@ def Main():
            GeneLenExonFiltered = PullingOutLowExonGenes(Blasthit)
            if GeneLenExonFiltered == 1:
                #NEEd to PUT IN DIRECTION SOMEWHERE?
-               FileWriter(Blasthit)
+               #FileWriter(Blasthit)
                GeneSeq = GeneObj(Blasthit)
                GeneSeq.FindGeneDirection()
                GeneSeq.RemoveOverlap()
                GeneSeq.SeqRetrieval(Genome)
-               SeqFileWriter(Blasthit, GeneSeq.Seqq)
+               #SeqFileWriter(Blasthit, GeneSeq.Seqq)
 
            else:
                FindDuplicationStatus = FindDuplications(Blasthit)
                if FindDuplicationStatus == 0:
-                   FileWriter(Blasthit)
+                   #FileWriter(Blasthit)
                    GeneSeq = GeneObj(Blasthit)
                    GeneSeq.FindGeneDirection()
                    GeneSeq.RemoveOverlap()
                    GeneSeq.SeqRetrieval(Genome)
-
-                   SeqFileWriter(Blasthit, GeneSeq.Seqq)
+                   #SeqFileWriter(Blasthit, GeneSeq.Seqq)
 
                     
                    #Call GENE OBJ
