@@ -5,7 +5,8 @@ import itertools
 import math
 from GeneClass import GeneObj
 from datetime import datetime
-from itertools import combinations
+from itertools import combinations, groupby
+from operator import itemgetter
 
 
 def GenomeReader(GenomeFile):
@@ -72,6 +73,31 @@ def DictEditor(DictGeneObj):
 
     """
 
+    def CheckDirection(ListofList):
+            """TODO: Docstring for .
+    
+            :ListofList: TODO
+            :returns: TODO
+    
+            """
+            Posotive = 0
+            Negative = 0
+            
+            for blastresult in ListofList:
+                if int(blastresult[4]) < int(blastresult[5]):
+                    Posotive += 1
+                elif int(blastresult[4]) > int(blastresult[5]):
+                    Negative += 1
+    
+            if Posotive > 0:
+                return 0
+            elif Negative > 0:
+                return 1
+            elif Posotive > 0 and Negative > 0:
+                return 2
+
+
+
     def ScaffoldHitRange(ListofList):
         """TODO: Docstring for ScaffoldHitRange.
         
@@ -109,30 +135,7 @@ def DictEditor(DictGeneObj):
             for item in ListofList:
                 print item
 
-    def CheckDirection(ListofList):
-        """TODO: Docstring for .
-
-        :ListofList: TODO
-        :returns: TODO
-
-        """
-        Posotive = 0
-        Negative = 0
-        
-        for blastresult in ListofList:
-            if int(blastresult[4]) < int(blastresult[5]):
-                Posotive += 1
-            elif int(blastresult[4]) > int(blastresult[5]):
-                Negative += 1
-
-        if Posotive > 0:
-            return 0
-        elif Negative > 0:
-            return 1
-        elif Posotive > 0 and Negative > 0:
-            return 2
-
-
+    
 
     
     def OverlapCheckandElimination(ListofList1, TupleLength1, ListofList2, \
@@ -318,19 +321,64 @@ def DuplicationSplitter(BlastListofList):
     :returns: TODO
 
     """
-    sorted(BlastListofList, key = lambda x: (x[2],x[4]))
-    for item in BlastListofList:
-        print item
-    print '\n'
+    
+    #def FindMultipleStarts(arg1):
+    #    """TODO: Docstring for FindMultipleStarts.
 
-    def FindMultipleStarts(arg1):
-        """TODO: Docstring for FindMultipleStarts.
+    #    :arg1: TODO
+    #    :returns: TODO
+
+    #    """
+
+    #    SmallestProtStart =  min(arg1, key=lambda x: int(x[2]))
+    #    LargestProtEnd =  max(arg1, key=lambda x: int(x[3]))
+    #    CreatedRange = xrange(int(SmallestProtStart), int(LargestProtEnd), 100)
+
+    #    for item in CreatedRange:
+    #        print item
+    #        for Blast in arg1:
+    #            if int(Blast[3]) < item:
+    #                print Blast
+
+    def MakeMoreList(arg1):
+        """TODO: Docstring for MakeMoreList.
 
         :arg1: TODO
         :returns: TODO
 
         """
-        pass
+
+        for k, g in groupby(enumerate(arg1), lambda (i,x):i-x):
+            print map(itemgetter(1), g)
+
+    def group_consecutives(vals, step=30):
+        """Return list of consecutive lists of numbers from vals (number list)."""
+        run = []
+        result = [run]
+        expect = None
+        for v in vals:
+            if (v == expect) or (expect is None) or v in range(expect, expect+20):
+                run.append(v)
+            else:
+                run = [v]
+                result.append(run)
+            expect = v + step
+        return result
+
+
+    Z = sorted(BlastListofList, key = lambda x: (x[4]))
+    print Z
+    print '\n'
+    Y = []
+    for item in BlastListofList:
+        Y.append(int(item[4]))
+        Y.append(int(item[5]))
+
+    #MakeMoreList(Y)
+    #FF = group_consecutives(Y)
+    #print FF
+
+   
 
 
 def FileWriter(ListofBlastData):
@@ -377,9 +425,6 @@ def SeqFileWriter(ListofBlastData, Sequence):
         f.write("\n")
         f.write(Sequence)
         f.write("\n")
-
-
-
 
 
 
