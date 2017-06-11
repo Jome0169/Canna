@@ -331,8 +331,8 @@ def DuplicationSplitter(BlastListofList):
     #    """
 
     #    SmallestProtStart =  min(arg1, key=lambda x: int(x[2]))
-    #    LargestProtEnd =  max(arg1, key=lambda x: int(x[3]))
-    #    CreatedRange = xrange(int(SmallestProtStart), int(LargestProtEnd), 100)
+    #    #LargestProtEnd =  max(arg1, key=lambda x: int(x[3]))
+    #    #CreatedRange = xrange(int(SmallestProtStart), int(LargestProtEnd), 100)
 
     #    for item in CreatedRange:
     #        print item
@@ -340,45 +340,84 @@ def DuplicationSplitter(BlastListofList):
     #            if int(Blast[3]) < item:
     #                print Blast
 
-    def MakeMoreList(arg1):
-        """TODO: Docstring for MakeMoreList.
+    #def MakeMoreList(arg1):
+    #    """TODO: Docstring for MakeMoreList.
 
-        :arg1: TODO
-        :returns: TODO
+    #    :arg1: TODO
+    #    :returns: TODO
 
-        """
+    #    """
 
-        for k, g in groupby(enumerate(arg1), lambda (i,x):i-x):
-            print map(itemgetter(1), g)
+    #    for k, g in groupby(enumerate(arg1), lambda (i,x):i-x):
+    #        print map(itemgetter(1), g)
 
-    def group_consecutives(vals, step=30):
-        """Return list of consecutive lists of numbers from vals (number list)."""
-        run = []
-        result = [run]
-        expect = None
-        for v in vals:
-            if (v == expect) or (expect is None) or v in range(expect, expect+20):
-                run.append(v)
-            else:
-                run = [v]
-                result.append(run)
-            expect = v + step
-        return result
+    #def group_consecutives(vals, step=30):
+    #    """Return list of consecutive lists of numbers from vals (number list)."""
+    #    run = []
+    #    result = [run]
+    #    expect = None
+    #    for v in vals:
+    #        if (v == expect) or (expect is None) or v in range(expect, expect+20):
+    #            run.append(v)
+    #        else:
+    #            run = [v]
+    #            result.append(run)
+    #        expect = v + step
+    #    return result
+
+    def Rangecreator(listoflist):
+        Ranges = []
+        for item in listoflist:
+            rangew = (int(item[2]), int(item[3]), int(item[4]), int(item[5]))
+            Ranges.append(rangew)
+        return Ranges
+
+    
+
+    def compareranges(rangess):
+
+        def DoCompare(point1, point2):
+            print point1
+            print point2
+            protrange1 = range(point1[0], point1[1])
+            protrange2 = range(point2[0],point2[1])
+
+            scafrange1 = range(point1[2], point1[3])
+            scafrange2 = range(point2[2], point2[3])
+
+            protrange1overlap = set(protrange1)
+            scafrange1overlap = set(scafrange1)
+
+            protoverlap = protrange1overlap.intersection(protrange2)
+            scafoverlap = scafrange1overlap.intersection(scafrange2)
+
+            protoverlaplen = len(protoverlap)
+            scafoverlaplen = len(scafoverlap)
 
 
-    Z = sorted(BlastListofList, key = lambda x: (x[4]))
-    print Z
+            print 'prot overlap'
+            print protoverlap
+            print "scafoverlap"
+            print scafoverlap
+            print '\n'
+            
+            
+
+
+
+
+
+        for a,b in itertools.combinations(rangess, 2):
+            DoCompare(a,b)
+
+    
+
+    
+
+    ranged = Rangecreator(BlastListofList)
+    compareranges(ranged)
     print '\n'
-    Y = []
-    for item in BlastListofList:
-        Y.append(int(item[4]))
-        Y.append(int(item[5]))
-
-    #MakeMoreList(Y)
-    #FF = group_consecutives(Y)
-    #print FF
-
-   
+  
 
 
 def FileWriter(ListofBlastData):
