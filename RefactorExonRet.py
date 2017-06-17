@@ -321,49 +321,7 @@ def DuplicationSplitter(BlastListofList):
     :returns: TODO
 
     """
-    
-    #def FindMultipleStarts(arg1):
-    #    """TODO: Docstring for FindMultipleStarts.
 
-    #    :arg1: TODO
-    #    :returns: TODO
-
-    #    """
-
-    #    SmallestProtStart =  min(arg1, key=lambda x: int(x[2]))
-    #    #LargestProtEnd =  max(arg1, key=lambda x: int(x[3]))
-    #    #CreatedRange = xrange(int(SmallestProtStart), int(LargestProtEnd), 100)
-
-    #    for item in CreatedRange:
-    #        print item
-    #        for Blast in arg1:
-    #            if int(Blast[3]) < item:
-    #                print Blast
-
-    #def MakeMoreList(arg1):
-    #    """TODO: Docstring for MakeMoreList.
-
-    #    :arg1: TODO
-    #    :returns: TODO
-
-    #    """
-
-    #    for k, g in groupby(enumerate(arg1), lambda (i,x):i-x):
-    #        print map(itemgetter(1), g)
-
-    #def group_consecutives(vals, step=30):
-    #    """Return list of consecutive lists of numbers from vals (number list)."""
-    #    run = []
-    #    result = [run]
-    #    expect = None
-    #    for v in vals:
-    #        if (v == expect) or (expect is None) or v in range(expect, expect+20):
-    #            run.append(v)
-    #        else:
-    #            run = [v]
-    #            result.append(run)
-    #        expect = v + step
-    #    return result
 
     def Rangecreator(listoflist):
         Ranges = []
@@ -372,13 +330,11 @@ def DuplicationSplitter(BlastListofList):
             Ranges.append(rangew)
         return Ranges
 
-    
 
     def compareranges(rangess):
 
         def DoCompare(point1, point2):
-            print point1
-            print point2
+            Pairthem= []
             protrange1 = range(point1[0], point1[1])
             protrange2 = range(point2[0],point2[1])
 
@@ -395,20 +351,46 @@ def DuplicationSplitter(BlastListofList):
             scafoverlaplen = len(scafoverlap)
 
 
-            print 'prot overlap'
-            print protoverlap
-            print "scafoverlap"
-            print scafoverlap
-            print '\n'
-            
-            
+            if protoverlaplen >= 15 and scafoverlaplen < 5:
+                ListPoint1 = list(point1)
+                ListPoint2 = list(point2)
+                Pairthem.append(ListPoint1)
+                Pairthem.append(ListPoint2)
+                #print point1
+                #print point2
+                #print 'prot overlap'
+                #print protoverlap
+                #print protoverlaplen
+                #print "scafoverlap"
+                #print scafoverlap
+                #print scafoverlaplen
+                #print '\n'
+
+            elif protoverlaplen >= 15 and scafoverlaplen >= 15:
+                pass 
+            elif protoverlaplen < 15 and scafoverlaplen >= 4:
+                print " These should be overlap and continuations"
+                print point1
+                print point2
+                print 'prot overlap'
+                print protoverlap
+                print protoverlaplen
+                print "scafoverlap"
+                print scafoverlap
+                print scafoverlaplen
+                print '\n'
 
 
+            elif protoverlaplen < 15 and scafoverlaplen :
+                pass
+            else:
+                pass 
+                #EXECPTIONS ARE BELOW 
 
-
-
+        PairedIndividuals = []
         for a,b in itertools.combinations(rangess, 2):
-            DoCompare(a,b)
+            print a, b 
+            #DoCompare(a,b)
 
     
 
