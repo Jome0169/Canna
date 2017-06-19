@@ -349,7 +349,7 @@ def DuplicationSplitter(BlastListofList):
 
             protoverlaplen = len(protoverlap)
             scafoverlaplen = len(scafoverlap)
-
+            
 
             if protoverlaplen >= 15 and scafoverlaplen < 5:
                 ListPoint1 = list(point1)
@@ -367,8 +367,46 @@ def DuplicationSplitter(BlastListofList):
                 #print '\n'
 
             elif protoverlaplen >= 15 and scafoverlaplen >= 15:
-                pass 
+                #print "Generally some weird overlap sequence"
+                pass
+                #print point1
+                #print point2
+                #print 'prot overlap'
+                #print protoverlap
+                #print protoverlaplen
+                #print "scafoverlap"
+                #print scafoverlap
+                #print scafoverlaplen
+
+
             elif protoverlaplen < 15 and scafoverlaplen >= 4:
+                pass
+                #print " These should be overlap and continuations"
+                #print point1
+                #print point2
+                #print 'prot overlap'
+                #print protoverlap
+                #print protoverlaplen
+                #print "scafoverlap"
+                #print scafoverlap
+                #print scafoverlaplen
+
+
+            elif protoverlaplen < 15 and scafoverlaplen < 15:
+                pass
+#                print "Do not overlap generally" 
+#
+#                print point1
+#                print point2
+#                print 'prot overlap'
+#                print protoverlap
+#                print protoverlaplen
+#                print "scafoverlap"
+#                print scafoverlap
+#                print scafoverlaplen
+#
+
+            else:
                 print " These should be overlap and continuations"
                 print point1
                 print point2
@@ -378,19 +416,13 @@ def DuplicationSplitter(BlastListofList):
                 print "scafoverlap"
                 print scafoverlap
                 print scafoverlaplen
-                print '\n'
 
 
-            elif protoverlaplen < 15 and scafoverlaplen :
-                pass
-            else:
-                pass 
                 #EXECPTIONS ARE BELOW 
 
         PairedIndividuals = []
         for a,b in itertools.combinations(rangess, 2):
-            print a, b 
-            #DoCompare(a,b)
+            DoCompare(a,b)
 
     
 
